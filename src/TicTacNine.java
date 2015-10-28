@@ -63,6 +63,16 @@ public class TicTacNine {
 		
 		return false;
 	}
+	public boolean isArrayFull(int[][] myArray) {
+		for(int i = 0; i < myArray.length; i++) {
+			for(int j = 0; j < myArray[i].length; j++) {
+				if (myArray[i][j] == 0) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
 	
 	public void clearArray(int[][] myArray) {
 		for(int i = 0; i < myArray.length; i++) {
