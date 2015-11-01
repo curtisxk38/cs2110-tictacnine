@@ -1,7 +1,7 @@
 
 public class TicTacNine {
-	int[][] smallBoard;
-	int[][] bigBoard;
+	public int[][] smallBoard;
+	public int[][] bigBoard;
 	
 
 	// x = 1
@@ -19,8 +19,7 @@ public class TicTacNine {
 	public void setBigBoard(int r, int c, int player) {
 		bigBoard[r][c] = player;
 	}
-	
-	public boolean checkWinner(int[][] myArray) {
+	public boolean checkRows(int[][] myArray) {
 		int firstSquare = 0;
 		boolean winner = true;
 		// Check rows
@@ -33,10 +32,15 @@ public class TicTacNine {
 					winner = false;
 				}
 			}
+			if (winner && firstSquare != 0) {
+				return true;
+			}
 		}
-		if (winner && firstSquare != 0) {
-			return true;
-		}
+		return false;
+	}
+	public boolean checkColumns(int[][] myArray) {
+		int firstSquare = 0;
+		boolean winner = true;
 		// Check columns
 		for (int j = 0; j< myArray[0].length; j++) {
 			for(int i = 0; i<myArray.length; i ++) {
@@ -47,21 +51,25 @@ public class TicTacNine {
 					winner = false;
 				}
 			}
+			if (winner && firstSquare != 0) {
+				return true;
+			}
 		}
-		if (winner && firstSquare != 0) {
-			return true;
-		}
-		// Check diagonals
-		winner = myArray[0][0] == myArray[1][1] && myArray[1][1] == myArray[2][2];
-		if (winner && myArray[0][0] != 0) {
-			return true;
-		}
-		winner = myArray[0][2] == myArray[1][1] && myArray[1][1] == myArray[0][2];
-		if (winner && myArray[0][2] != 0) {
-			return true;
-		}
-		
 		return false;
+	}
+	public boolean checkDiagonals(int[][] myArray) {
+		return (myArray[1][1] != 0) && ( (myArray[0][0] == myArray[1][1] && myArray[1][1] == myArray[2][2]) || (myArray[0][2] == myArray[1][1] && myArray[1][1] == myArray[2][0]) );
+	}
+	public boolean checkWinner(int[][] myArray) {
+		return checkRows(myArray) || checkColumns(myArray) || checkDiagonals(myArray);
+	}
+	public void printArray(int[][] myArray) {
+		for(int i = 0; i < myArray.length; i ++) {
+			for(int j = 0; j < myArray[i].length; j++) {
+				System.out.print(myArray[i][i] + " ");
+			}
+			System.out.print("\n");
+		}
 	}
 	public boolean isArrayFull(int[][] myArray) {
 		for(int i = 0; i < myArray.length; i++) {
@@ -80,6 +88,12 @@ public class TicTacNine {
 				myArray[i][j] = 0;
 			}
 		}
+	}
+	public static void main(String[] args) {
+		TicTacNine x = new TicTacNine();
+		x.takeTurn(0, 0, 1); x.takeTurn(1, 0, 1); x.takeTurn(2, 0, 1);
+		x.printArray(x.smallBoard);
+		
 	}
 	
 }
