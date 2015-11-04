@@ -67,10 +67,10 @@ public class TicTacNine {
 		return checkRows(myArray) || checkColumns(myArray) || checkDiagonals(myArray);
 	}
 
-	public void printArray(int[][] myArray) {
-		for (int i = 0; i < myArray.length; i++) {
-			for (int j = 0; j < myArray[i].length; j++) {
-				System.out.print(myArray[i][i] + " ");
+	public void printArray() {
+		for (int i = 0; i < this.smallBoard.length; i++) {
+			for (int j = 0; j < this.smallBoard[i].length; j++) {
+				System.out.print(this.smallBoard[i][j] + " ");
 			}
 			System.out.print("\n");
 		}
@@ -97,12 +97,11 @@ public class TicTacNine {
 
 	public static void main(String[] args) {
 		TicTacNine x = new TicTacNine();
-		x.takeTurn(0, 0, 1);
-		x.takeTurn(1, 0, 1);
-		x.takeTurn(2, 0, 1);
-		x.printArray(x.smallBoard);
-		x.clearArray(x.smallBoard);
-		x.printArray(x.smallBoard);
+		x.takeTurn(0, 1, 2);
+		x.takeTurn(1, 1, 2);
+		x.takeTurn(2, 1, 2);
+		x.printArray();
+		System.out.println(x.checkWinner(x.smallBoard));
 
 	}
 
