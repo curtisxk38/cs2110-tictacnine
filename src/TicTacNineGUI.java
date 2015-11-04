@@ -41,6 +41,17 @@ public class TicTacNineGUI{
 				frame.add(x);
 			}
 		}
+		//Make quit button
+		JButton quitButton = new JButton("Quit");
+		quitButton.setBounds(width/2 - 40, height - 80, 80, 50);
+		quitButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent event) {
+				System.exit(0);
+			}
+		});
+		frame.add(quitButton);
+		
 		//Win text
 		JTextArea winText = new JTextArea("Hello");
 		winText.setBounds(width/2, height - 60, 50, 50);
