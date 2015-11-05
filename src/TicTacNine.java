@@ -35,6 +35,7 @@ public class TicTacNine {
 			if (winner && firstSquare != 0) {
 				return true;
 			}
+			winner = true;
 		}
 		return false;
 	}
@@ -54,6 +55,7 @@ public class TicTacNine {
 			if (winner && firstSquare != 0) {
 				return true;
 			}
+			winner = true;
 		}
 		return false;
 	}
@@ -67,10 +69,10 @@ public class TicTacNine {
 		return checkRows(myArray) || checkColumns(myArray) || checkDiagonals(myArray);
 	}
 
-	public void printArray() {
-		for (int i = 0; i < this.smallBoard.length; i++) {
-			for (int j = 0; j < this.smallBoard[i].length; j++) {
-				System.out.print(this.smallBoard[i][j] + " ");
+	public void printArray(int[][] myArray) {
+		for (int i = 0; i < myArray.length; i++) {
+			for (int j = 0; j < myArray[i].length; j++) {
+				System.out.print(myArray[i][j] + " ");
 			}
 			System.out.print("\n");
 		}
@@ -100,7 +102,7 @@ public class TicTacNine {
 		x.takeTurn(0, 1, 2);
 		x.takeTurn(1, 1, 2);
 		x.takeTurn(2, 1, 2);
-		x.printArray();
+		x.printArray(x.smallBoard);
 		System.out.println(x.checkWinner(x.smallBoard));
 
 	}

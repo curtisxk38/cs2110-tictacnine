@@ -95,8 +95,7 @@ public class TicTacNineGUI{
 		else {
 			playerTurn = 1;
 		}
-		//game.printArray();
-		//System.out.println(game.checkColumns(game.smallBoard));
+		//game.printArray(game.smallBoard);
 
 	}
 	private class ClickAction extends AbstractAction {
