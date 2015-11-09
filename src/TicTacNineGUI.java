@@ -5,44 +5,54 @@ import java.util.ArrayList;
 import javax.swing.*;
 
 public class TicTacNineGUI{
-	int playerTurn;
+	
+	JFrame frame;
+	
 	TicTacNine game;
+	int playerTurn;
 	
 	int width = 500;
 	int height = 600;
 	
 	boolean toggleNeeded;
+	TicTacGraphics graph;
+	JLabel l = new JLabel();
+	JLabel turnDisplay = new JLabel();
 	
-	ArrayList<JButton> mainButtons = new ArrayList<JButton>();
+	ArrayList<BoardTile> mainButtons = new ArrayList<BoardTile>();
 	
 	// Keep track of which 3x3 is currently being played on
 	// because that 3x3 is what smallBoars should be;
 	int[] currentSmallBoard = {-1, -1};
 	
 	public TicTacNineGUI () {
-		createAndShowGUI();
 		game = new TicTacNine();
+		graph = new TicTacGraphics(game.bigBoard);
+		frame = new JFrame("TicTacNine");
 		playerTurn = 1;
 		toggleNeeded = true;
+		createAndShowGUI();
+
 	}
+	
 	private void clearSmall() {
 		game.clearArray(game.smallBoard);
-		for(JButton b : mainButtons) {
-			ClickAction a = (ClickAction)b.getAction();
-			if(a != null && a.getBigX() == currentSmallBoard[0] && a.getBigY() == currentSmallBoard[1]) {
-				b.setText(" ");
-			}	
+		for(BoardTile x : mainButtons) {
+			if(x.r/3 == currentSmallBoard[1] && x.c/3 == currentSmallBoard[0]) {
+				x.getButton().setText(" ");
+			}
 		}
 	}
 	
-	
 	private void clearBig() {
-		// Currently not what it should be
 		game.clearArray(game.smallBoard);
 		game.clearArray(game.bigBoard);
-		for(JButton x : mainButtons) {
-			x.setText(" ");
-		}
+		for(BoardTile x : mainButtons) {
+			x.getButton().setText(" ");
+		}			
+		// Reset the array that keeps track of where the smallBoard is
+		currentSmallBoard[0] = -1;
+		currentSmallBoard[1] = -1;
 		playerTurn = 1;
 	}
 	
@@ -51,11 +61,10 @@ public class TicTacNineGUI{
 	 * invoked from the event-dispatching thread.
 	 */
 	private void createAndShowGUI() {
-		// Create and set up the window.
-		JFrame frame = new JFrame("TicTacNine");
+		// Set up the window.
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setBounds(0, 0, width, height);
-		
+		frame.getContentPane().setLayout(null);
 		// --------------------------------------
 		//Make buttons
 		for(int i = 0; i < 9; i++) {
@@ -63,11 +72,11 @@ public class TicTacNineGUI{
 				JButton x = new JButton(" ");
 				x.setBounds(25 + i * 50, 25 + j*50, 50, 50);
 				x.addActionListener(new ClickAction(x, j%3, i%3, j/3, i/3));
-				frame.add(x);
+				frame.getContentPane().add(x);
 				x.setContentAreaFilled(false);
 				x.setFocusPainted(false);
 				x.setOpaque(false);
-				mainButtons.add(x);
+				mainButtons.add(new BoardTile(x, i, j));
 			}
 		}
 		
@@ -80,7 +89,7 @@ public class TicTacNineGUI{
 				System.exit(0);
 			}
 		});
-		frame.add(quitButton);
+		frame.getContentPane().add(quitButton);
 		
 		//Make Restart button
 		JButton restartButton = new JButton("Restart");
@@ -89,29 +98,45 @@ public class TicTacNineGUI{
 			@Override
 			public void actionPerformed(ActionEvent event) {
 				clearBig();
+				l.setText("");
+				turnDisplay.setText("Player " + playerTurn + "'s turn");
 			}
 		});
-		frame.add(restartButton);
-
+		frame.getContentPane().add(restartButton);
+		// graphics
+		graph.setVisible(true);
+		frame.setGlassPane(graph);
+		l.setBounds(new Rectangle(10, 480, 300, 30));
+		l.setText("");
+		turnDisplay.setBounds(380, 10, 200, 10);
+		turnDisplay.setText("Player " + playerTurn + "'s turn");
+		frame.getContentPane().add(l);
+		frame.getContentPane().add(turnDisplay);
 		// Display the window
-		frame.setLayout(null);
 		frame.setLocationRelativeTo(null); // center it
 		frame.setVisible(true);
 	}
 	
 	private void gameTick() {
+		graph.setVisible(true);
+		if(!l.getText().equals("")) {
+			l.setText("");
+		}
 		if(game.checkWinner(game.smallBoard)) {
+			game.setBigBoard(currentSmallBoard[0], currentSmallBoard[1], playerTurn);
 			if(game.checkWinner(game.bigBoard)) {
 				// Win entire game
-				System.out.println("P" + playerTurn + "wins the whole game!");
+				System.out.println("P" + playerTurn + " wins the whole game!");
+				l.setText("P" + playerTurn + " wins the whole game!");
+				return;
 			}
 			// Win current smallBoard
 			System.out.println("P" +playerTurn + " wins this spot!");
-			game.setBigBoard(currentSmallBoard[0], currentSmallBoard[1], playerTurn);
+			l.setText("P" +playerTurn + " wins this spot!");
 			clearSmall();
 			
 			//Draw some visual for winning this square on the bigboard
-			
+
 			// Reset the array that keeps track of where the smallBoard is
 			currentSmallBoard[0] = -1;
 			currentSmallBoard[1] = -1;
@@ -124,16 +149,18 @@ public class TicTacNineGUI{
 			// We decided to make the players replay the small game until there is no tie
 			clearSmall();
 			System.out.println("Tie! Keep playing until one player wins!");
+			l.setText("Tie! Keep playing until one player wins!");
 		}
 		else if(game.isArrayFull(game.bigBoard)) {
 			// The big board has tied
 			System.out.println("The game ends in a tie.");
+			l.setText("The game ends in a tie.");
 		}
 		if(toggleNeeded) {
 			togglePlayers();
 		}
+		turnDisplay.setText("Player " + playerTurn + "'s turn");
 		toggleNeeded = true;
-		//game.printArray(game.smallBoard);
 
 	}
 	private void togglePlayers() {
@@ -143,6 +170,48 @@ public class TicTacNineGUI{
 		}
 		else {
 			playerTurn = 1;
+		}
+	}
+	class BoardTile {
+		JButton b;
+		public int r;
+		public int c;
+		public BoardTile(JButton b, int r, int c) {
+			this.b = b;
+			this.r = r;
+			this.c = c;
+		}
+		public JButton getButton() {
+			return b;
+		}
+	}
+	class TicTacGraphics extends JComponent {
+		int[][]bigBoard;
+		public TicTacGraphics(int[][]b) {
+			super();
+			bigBoard = b;
+			setVisible(true);
+		}
+		protected void paintComponent(Graphics g) {
+			super.paintComponent(g);
+			
+            //System.out.print("t");
+			for (int i = 0; i < bigBoard.length; i ++) {
+				for (int j = 0; j < bigBoard[0].length; j++) {
+					if(bigBoard[i][j] == 1) {
+						drawX(g, i, j);
+					}
+					if(bigBoard[i][j] == 2) {
+						drawO(g, i, j);
+					}
+				}
+			}
+		}
+		private void drawX(Graphics g, int c, int r) {
+			g.drawImage(Toolkit.getDefaultToolkit().getImage("x.png"), 25 + r * 150, 25 + c * 150, null);
+		}
+		private void drawO(Graphics g, int c, int r) {
+			g.drawImage(Toolkit.getDefaultToolkit().getImage("o.png"), 25 + r * 150, 25 + c * 150, null);
 		}
 	}
 	
@@ -173,13 +242,13 @@ public class TicTacNineGUI{
 		
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			if(currentSmallBoard[0] == -1 && currentSmallBoard[1] == -1) {
+			//debugPrint();
+			if(game.bigBoard[bigX][bigY] == 0 && currentSmallBoard[0] == -1 && currentSmallBoard[1] == -1) {
 				currentSmallBoard[0] = bigX;
 				currentSmallBoard[1] = bigY;
 			}
 			if(bigX == currentSmallBoard[0] && bigY == currentSmallBoard[1] && b.getText().equals(" ")) {
 				game.takeTurn(smallX, smallY, playerTurn);
-				debugPrint();
 				if (playerTurn == 1) {
 					b.setText("X");
 				}
