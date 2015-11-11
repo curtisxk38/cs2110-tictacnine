@@ -12,7 +12,7 @@ public class TicTacNineGUI{
 	int playerTurn;
 	
 	int width = 500;
-	int height = 600;
+	int height = 620;
 	
 	boolean toggleNeeded;
 	TicTacGraphics graph;
@@ -83,7 +83,7 @@ public class TicTacNineGUI{
 		
 		//Make quit button
 		JButton quitButton = new JButton("Exit");
-		quitButton.setBounds(width/2 - 90, height - 80, 80, 50);
+		quitButton.setBounds(width/2 - 90, height - 100, 80, 50);
 		quitButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent event) {
@@ -94,7 +94,7 @@ public class TicTacNineGUI{
 		
 		//Make Restart button
 		JButton restartButton = new JButton("Restart");
-		restartButton.setBounds(width/2, height - 80, 90, 50);
+		restartButton.setBounds(width/2, height - 100, 90, 50);
 		restartButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent event) {
