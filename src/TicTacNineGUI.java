@@ -18,6 +18,7 @@ public class TicTacNineGUI{
 	TicTacGraphics graph;
 	JLabel l = new JLabel();
 	JLabel turnDisplay = new JLabel();
+	boolean won = false;
 	
 	ArrayList<BoardTile> mainButtons = new ArrayList<BoardTile>();
 	
@@ -32,7 +33,6 @@ public class TicTacNineGUI{
 		playerTurn = 1;
 		toggleNeeded = true;
 		createAndShowGUI();
-
 	}
 	
 	private void clearSmall() {
@@ -123,6 +123,7 @@ public class TicTacNineGUI{
 	}
 	
 	private void gameTick() {
+		graph.repaint();
 		graph.setVisible(true);
 		if(!l.getText().equals("")) {
 			l.setText("");
@@ -136,6 +137,7 @@ public class TicTacNineGUI{
 				clearSmall();
 				currentSmallBoard[0] = -1;
 				currentSmallBoard[1] = -1;
+				won = true;
 				return;
 			}
 			// Win current smallBoard
@@ -159,7 +161,7 @@ public class TicTacNineGUI{
 			System.out.println("Tie! Keep playing until one player wins!");
 			l.setText("Tie! Keep playing until one player wins!");
 		}
-		else if(game.isArrayFull(game.bigBoard)) {
+		if(game.isArrayFull(game.bigBoard)) {
 			// The big board has tied
 			System.out.println("The game ends in a tie.");
 			l.setText("The game ends in a tie.");
@@ -200,7 +202,7 @@ public class TicTacNineGUI{
 			bigBoard = b;
 			setVisible(true);
 		}
-		protected void paintComponent(Graphics g) {
+		public void paintComponent(Graphics g) {
 			super.paintComponent(g);
 			
             //System.out.print("t");
@@ -260,11 +262,12 @@ public class TicTacNineGUI{
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			//debugPrint();
+			graph.repaint();
 			if(game.bigBoard[bigX][bigY] == 0 && currentSmallBoard[0] == -1 && currentSmallBoard[1] == -1) {
 				currentSmallBoard[0] = bigX;
 				currentSmallBoard[1] = bigY;
 			}
-			if(bigX == currentSmallBoard[0] && bigY == currentSmallBoard[1] && b.getText().equals(" ")) {
+			if(won == false && bigX == currentSmallBoard[0] && bigY == currentSmallBoard[1] && b.getText().equals(" ")) {
 				game.takeTurn(smallX, smallY, playerTurn);
 				if (playerTurn == 1) {
 					b.setText("X");
