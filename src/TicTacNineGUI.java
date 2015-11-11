@@ -35,12 +35,14 @@ public class TicTacNineGUI{
 		createAndShowGUI();
 	}
 	
-	private void clearSmall() {
+	private void clearSmall(boolean tie) {
 		game.clearArray(game.smallBoard);
 		for(BoardTile x : mainButtons) {
 			if(x.r/3 == currentSmallBoard[1] && x.c/3 == currentSmallBoard[0]) {
 				x.getButton().setText(" ");
-				x.getButton().setVisible(false);
+				if(!tie) {
+					x.getButton().setVisible(false);
+				}
 			}
 		}
 	}
@@ -134,7 +136,7 @@ public class TicTacNineGUI{
 				// Win entire game
 				System.out.println("P" + playerTurn + " wins the whole game!");
 				l.setText("P" + playerTurn + " wins the whole game!");
-				clearSmall();
+				clearSmall(false);
 				currentSmallBoard[0] = -1;
 				currentSmallBoard[1] = -1;
 				won = true;
@@ -143,7 +145,7 @@ public class TicTacNineGUI{
 			// Win current smallBoard
 			System.out.println("P" +playerTurn + " wins this spot!");
 			l.setText("P" +playerTurn + " wins this spot!");
-			clearSmall();
+			clearSmall(false);
 			
 			//Draw some visual for winning this square on the bigboard
 
@@ -157,7 +159,7 @@ public class TicTacNineGUI{
 		else if(game.isArrayFull(game.smallBoard)) {
 			// Tie on smallBoard
 			// We decided to make the players replay the small game until there is no tie
-			clearSmall();
+			clearSmall(true);
 			System.out.println("Tie! Keep playing until one player wins!");
 			l.setText("Tie! Keep playing until one player wins!");
 		}
