@@ -106,6 +106,7 @@ public class TicTacNineGUI{
 				turnDisplay.setText("Player " + playerTurn + "'s turn");
 			}
 		});
+
 		frame.getContentPane().add(restartButton);
 		// graphics
 		graph.setVisible(true);
@@ -213,6 +214,15 @@ public class TicTacNineGUI{
 					}
 				}
 			}
+
+			
+			Graphics2D g2 = (Graphics2D) g;
+			g2.setStroke(new BasicStroke(2));
+			g2.setStroke(new BasicStroke(3));
+			g2.drawLine(175, 27, 175, 470);
+			g2.drawLine(325, 27, 325, 470);
+			g2.drawLine(24, 174, 475, 174);
+			g2.drawLine(24, 324, 475, 324);
 		}
 		private void drawX(Graphics g, int c, int r) {
 			g.drawImage(Toolkit.getDefaultToolkit().getImage("x.png"), 25 + r * 150, 25 + c * 150, null);
