@@ -40,6 +40,7 @@ public class TicTacNineGUI{
 		for(BoardTile x : mainButtons) {
 			if(x.r/3 == currentSmallBoard[1] && x.c/3 == currentSmallBoard[0]) {
 				x.getButton().setText(" ");
+				x.getButton().setVisible(false);
 			}
 		}
 	}
@@ -99,6 +100,9 @@ public class TicTacNineGUI{
 			public void actionPerformed(ActionEvent event) {
 				clearBig();
 				l.setText("");
+				for(BoardTile x: mainButtons) {
+					x.getButton().setVisible(true);
+				}
 				turnDisplay.setText("Player " + playerTurn + "'s turn");
 			}
 		});
@@ -128,6 +132,9 @@ public class TicTacNineGUI{
 				// Win entire game
 				System.out.println("P" + playerTurn + " wins the whole game!");
 				l.setText("P" + playerTurn + " wins the whole game!");
+				clearSmall();
+				currentSmallBoard[0] = -1;
+				currentSmallBoard[1] = -1;
 				return;
 			}
 			// Win current smallBoard
