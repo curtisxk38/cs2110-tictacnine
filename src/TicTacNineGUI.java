@@ -1,7 +1,11 @@
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 
 public class TicTacNineGUI{
@@ -20,6 +24,9 @@ public class TicTacNineGUI{
 	JLabel turnDisplay = new JLabel();
 	boolean won = false;
 	
+	private BufferedImage oImage;
+	private BufferedImage xImage;
+	
 	ArrayList<BoardTile> mainButtons = new ArrayList<BoardTile>();
 	
 	// Keep track of which 3x3 is currently being played on
@@ -33,6 +40,15 @@ public class TicTacNineGUI{
 		playerTurn = 1;
 		toggleNeeded = true;
 		createAndShowGUI();
+		loadImage();
+	}
+	private void loadImage() {
+		try {
+			oImage = ImageIO.read(new File("o.png"));	
+			xImage = ImageIO.read(new File("x.png"));
+		} catch (IOException x) {
+			System.out.println(x);
+		}
 	}
 	
 	private void clearSmall(boolean tie) {
@@ -229,10 +245,10 @@ public class TicTacNineGUI{
 			g2.drawLine(24, 324, 475, 324);
 		}
 		private void drawX(Graphics g, int c, int r) {
-			g.drawImage(Toolkit.getDefaultToolkit().getImage("x.png"), 25 + r * 150, 25 + c * 150, null);
+			g.drawImage(xImage, 25 + r * 150, 25 + c * 150, null);
 		}
 		private void drawO(Graphics g, int c, int r) {
-			g.drawImage(Toolkit.getDefaultToolkit().getImage("o.png"), 25 + r * 150, 25 + c * 150, null);
+			g.drawImage(oImage, 25 + r * 150, 25 + c * 150, null);
 		}
 	}
 	
