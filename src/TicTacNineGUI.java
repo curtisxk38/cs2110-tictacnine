@@ -105,14 +105,15 @@ public class TicTacNineGUI{
 				for(BoardTile x: mainButtons) {
 					x.getButton().setVisible(true);
 				}
+				won = false;
 				turnDisplay.setText("Player " + playerTurn + "'s turn");
 			}
 		});
 
 		frame.getContentPane().add(restartButton);
 		// graphics
-		graph.setVisible(true);
 		frame.setGlassPane(graph);
+		graph.setVisible(true);
 		l.setBounds(new Rectangle(10, 480, 300, 30));
 		l.setText("");
 		turnDisplay.setBounds(380, 10, 200, 10);
@@ -122,11 +123,10 @@ public class TicTacNineGUI{
 		// Display the window
 		frame.setLocationRelativeTo(null); // center it
 		frame.setVisible(true);
+		graph.repaint();
 	}
 	
 	private void gameTick() {
-		graph.repaint();
-		graph.setVisible(true);
 		if(!l.getText().equals("")) {
 			l.setText("");
 		}
