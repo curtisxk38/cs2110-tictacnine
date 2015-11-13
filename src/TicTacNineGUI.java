@@ -4,6 +4,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.*;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -52,15 +53,87 @@ public class TicTacNineGUI{
 	}
 	
 	private void clearSmall(boolean tie) {
-		game.clearArray(game.smallBoard);
-		for(BoardTile x : mainButtons) {
-			if(x.r/3 == currentSmallBoard[1] && x.c/3 == currentSmallBoard[0]) {
-				x.getButton().setText(" ");
-				if(!tie) {
-					x.getButton().setVisible(false);
+		//If there is a tie in the game, this will be run
+		if (tie){
+		Object[] options = {"Rock",
+                "Paper",
+                "Scissors"};
+		int n = JOptionPane.showOptionDialog(frame,
+			    "Let's play Rock, Paper, Scissors (Player who just went clicks)",
+			    "The Tie Breaker!!!! (Beat the Computer!)",
+			    JOptionPane.YES_NO_CANCEL_OPTION,
+			    JOptionPane.WARNING_MESSAGE,
+			    null,
+			    options,
+			    options[2]);
+		System.out.println(n);
+		//keep running the option pane until an option is chosen
+		while (n == -1) {
+			n = JOptionPane.showOptionDialog(frame,
+				    "Let's play Rock, Paper, Scissors (Player who just went clicks)",
+				    "The Tie Breaker!!!! (Beat the Computer!)",
+				    JOptionPane.YES_NO_CANCEL_OPTION,
+				    JOptionPane.WARNING_MESSAGE,
+				    null,
+				    options,
+				    options[2]);
+			System.out.println(n);
+		}
+		Random rn = new Random();
+		int comp = rn.nextInt(3);
+		System.out.println(comp);
+		//if the current player and computer both play the same hand
+		if (n == comp) {
+			game.clearArray(game.smallBoard);
+			for(BoardTile x : mainButtons) {
+				if(x.r/3 == currentSmallBoard[1] && x.c/3 == currentSmallBoard[0]) {
+					x.getButton().setText(" ");
+					if(!tie) {
+						x.getButton().setVisible(false);
+					}
+				}
+			}
+			l.setText("Choose the same hand("+ options[n] +")? So Play again!");
+		}
+		//the current player wins the small board if he wins the game
+		else if((n == 0 && comp == 2) || (n == 1 && comp == 0) | (n == 2 && comp == 1)){
+			l.setText("P" +playerTurn + " wins this spot! " + options[n] + " > " + options[comp]);
+			game.setBigBoard(currentSmallBoard[0], currentSmallBoard[1], playerTurn);
+			clearSmall(false);
+			currentSmallBoard[0] = -1;
+			currentSmallBoard[1] = -1;
+			toggleNeeded = false;
+		}
+		//the other player wins the small board if computer wins
+		else if((n == 0 && comp == 1) || (n == 1 && comp == 2) || (n == 2 && comp == 0)){
+			if (playerTurn == 2) {
+				game.setBigBoard(currentSmallBoard[0], currentSmallBoard[1], (playerTurn-1));;
+				//System.out.println("P" + (playerTurn-1) + " wins this spot!");
+				l.setText("P" + (playerTurn-1) + " wins this spot! " + options[comp] + " > " + options[n]);
+				clearSmall(false);
+				}
+			else if (playerTurn == 1){
+				game.setBigBoard(currentSmallBoard[0], currentSmallBoard[1], (playerTurn+1));
+				//System.out.println("P" + (playerTurn+1) + " wins this spot!");
+				l.setText("P" + (playerTurn+1) + " wins this spot! " + options[comp] + " > " + options[n]);
+				clearSmall(false);
+				}
+			currentSmallBoard[0] = -1;
+			currentSmallBoard[1] = -1;
+			}
+		}
+		else{
+			game.clearArray(game.smallBoard);
+			for(BoardTile x : mainButtons) {
+				if(x.r/3 == currentSmallBoard[1] && x.c/3 == currentSmallBoard[0]) {
+					x.getButton().setText(" ");
+					if(!tie) {
+						x.getButton().setVisible(false);
+					}
 				}
 			}
 		}
+		
 	}
 	
 	private void clearBig() {
@@ -94,13 +167,16 @@ public class TicTacNineGUI{
 				frame.getContentPane().add(x);
 				x.setContentAreaFilled(false);
 				x.setFocusPainted(false);
-				x.setOpaque(false);
+				x.setOpaque(true);
+				Color light_Blue = new Color(102,178,255);
+				x.setBackground(light_Blue);
 				mainButtons.add(new BoardTile(x, i, j));
 			}
 		}
 		
 		//Make quit button
 		JButton quitButton = new JButton("Exit");
+		quitButton.setForeground(Color.blue);
 		quitButton.setBounds(width/2 - 90, height - 100, 80, 50);
 		quitButton.addActionListener(new ActionListener() {
 			@Override
@@ -112,6 +188,7 @@ public class TicTacNineGUI{
 		
 		//Make Restart button
 		JButton restartButton = new JButton("Restart");
+		restartButton.setForeground(Color.red);
 		restartButton.setBounds(width/2, height - 100, 90, 50);
 		restartButton.addActionListener(new ActionListener() {
 			@Override
@@ -174,10 +251,8 @@ public class TicTacNineGUI{
 		}
 		else if(game.isArrayFull(game.smallBoard)) {
 			// Tie on smallBoard
-			// We decided to make the players replay the small game until there is no tie
+			// We decided to make the players play a game of Rock-Paper-Scissors
 			clearSmall(true);
-			System.out.println("Tie! Keep playing until one player wins!");
-			l.setText("Tie! Keep playing until one player wins!");
 		}
 		if(game.isArrayFull(game.bigBoard)) {
 			// The big board has tied
@@ -289,9 +364,14 @@ public class TicTacNineGUI{
 				game.takeTurn(smallX, smallY, playerTurn);
 				if (playerTurn == 1) {
 					b.setText("X");
+					b.setFont(b.getFont().deriveFont(18.0f));
+					b.setForeground(Color.blue);
 				}
 				else {
 					b.setText("O");
+					b.setFont(b.getFont().deriveFont(18.0f));
+					Color dark_Orange = new Color(255,128,0);
+					b.setForeground(dark_Orange);
 				}
 				
 				gameTick();
