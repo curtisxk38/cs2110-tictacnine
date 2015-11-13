@@ -232,6 +232,7 @@ public class TicTacNineGUI{
 				clearSmall(false);
 				currentSmallBoard[0] = -1;
 				currentSmallBoard[1] = -1;
+				JOptionPane.showMessageDialog(frame, "Game Over! " + "P"+playerTurn + " wins the whole game!");
 				won = true;
 				return;
 			}
@@ -258,6 +259,7 @@ public class TicTacNineGUI{
 			// The big board has tied
 			System.out.println("The game ends in a tie.");
 			l.setText("The game ends in a tie.");
+			JOptionPane.showMessageDialog(frame, "Game Over! The game ends in a tie.");
 		}
 		if(toggleNeeded) {
 			togglePlayers();
